@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG   CMakeFiles/calibrate.dir/calibrate.cxx.o  -o calibrate -rdynamic -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz ../libCVD.a -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz 

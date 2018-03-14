@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG   CMakeFiles/cvd_display_image.dir/cvd_display_image.cxx.o  -o cvd_display_image -rdynamic -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz ../libCVD.a -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz 

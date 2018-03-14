@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG   CMakeFiles/fast_corner_test.dir/fast_corner_test.cc.o  -o fast_corner_test -rdynamic -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz ../libCVD.a ../libCVD.a -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz 

@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG   CMakeFiles/load_and_save.dir/load_and_save.cc.o  -o load_and_save -rdynamic -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz ../libCVD.a ../libCVD.a -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz 

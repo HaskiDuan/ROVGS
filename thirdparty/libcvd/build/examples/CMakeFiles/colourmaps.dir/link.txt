@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG   CMakeFiles/colourmaps.dir/colourmaps.cc.o  -o colourmaps -rdynamic -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz ../libCVD.a -lSM -lICE -lX11 -lXext -lGLU -lGL -lpthread -lpng -lz 
