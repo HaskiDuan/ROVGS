@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ROV_groundstation</class>
+ <widget class="QWidget" name="ROV_groundstation">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ROV_groundstation</string>
+  </property>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>20</y>
+     <width>561</width>
+     <height>371</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Position/Attitute Control Panel</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>111</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Deep Control</string>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="yValueScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>280</y>
+      <width>240</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-32768</number>
+    </property>
+    <property name="maximum">
+     <number>32768</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QDial" name="yawValueDial">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>70</y>
+      <width>161</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-32768</number>
+    </property>
+    <property name="maximum">
+     <number>32768</number>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="xValueScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>70</y>
+      <width>32</width>
+      <height>240</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-32768</number>
+    </property>
+    <property name="maximum">
+     <number>32768</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="zValueScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>70</y>
+      <width>32</width>
+      <height>240</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-32768</number>
+    </property>
+    <property name="maximum">
+     <number>32768</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>40</y>
+      <width>21</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>X</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>330</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Y</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>40</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Yaw</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>410</y>
+     <width>561</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Lights Control</string>
+   </property>
+   <widget class="QCheckBox" name="lightsStateCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>40</y>
+      <width>141</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lights On/Off</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="lightBrightnessSlider">
+    <property name="geometry">
+     <rect>
+      <x>249</x>
+      <y>43</y>
+      <width>271</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>5</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>70</y>
+      <width>81</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Brightness</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>20</y>
+     <width>521</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>ROV Monitor Panel</string>
+   </property>
+   <widget class="QLabel" name="labelROVPings">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>491</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
