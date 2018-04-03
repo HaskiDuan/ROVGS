@@ -36,9 +36,11 @@ void PingThread::run(){
     std::cout << "Starting the network control thread" << std::endl;
 
     //20000 bytes and 500 bytes
-    sprintf(pingCommand20000,"ping -c 1 -s 20000 -w 1 127.0.0.1");
-    sprintf(pingCommand500,"ping -c 1 -s 500 -w 1 127.0.0.1");
+    sprintf(pingCommand20000,"ping -c 1 -s 20000 -w 1 192.168.0.101");
+    sprintf(pingCommand500,"ping -c 1 -s 500 -w 1 192.168.0.101");
     FILE *p;
+
+    measure = true;
 
     while(keepRunning){
         if(measure){
@@ -48,9 +50,9 @@ void PingThread::run(){
             pclose(p);
 
             //sleep 1s
-            sleep(1);
+            sleep(1000);
             if(!keepRunning) break;
-            sleep(1);
+            sleep(1000);
             if(!keepRunning) break;
 
             p = popen(pingCommand500,"r");
@@ -77,9 +79,11 @@ void PingThread::run(){
             //if(robotThread != NULL)
             if(gui != NULL) gui->setPings((int)p500,(int)p20000);
 
-            sleep(1);
+
+
+            sleep(1000);
             if(!keepRunning) break;
-            sleep(1);
+            sleep(1000);
             if(!keepRunning) break;
 
 

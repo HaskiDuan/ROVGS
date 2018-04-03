@@ -7,9 +7,11 @@
 #include <QQuickView>
 #include <QQmlEngine>
 #include <QQmlFileSelector>
+#include <QImage>
 
 #include "src/robotthread.h"
 
+class RobotThread;
 class PingThread;
 struct ControlCommand;
 
@@ -28,11 +30,16 @@ public:
     PingThread*  pingThread;
 
     /*when joystick values change, show them in GUI*/
-    void setaccValue(const short & eventNumber , const short &eventValue);
+    void setAccValue(const short & eventNumber , const short &eventValue);
     /*when joystick's Button states change, show them in GUI*/
     void changeButtonState(const short& eventNumber);
 
+    //emit function for emit signals
     void setPings(int p500,int p20000);
+    void setJoystickButtons(short eventNumber);
+    void setJoystickAxis(short eventNumber, short eventValue);
+    void setVideoStream(const QImage& img);
+
     void closeWindow();
 
 
@@ -41,10 +48,21 @@ private:
 
 private slots:
     void setPingsSlot(int p500, int p20000);
-    //void setJoystickInfoSlot(QString);
+
+    // Slots to deal with joystick inputs
+    void setJoystickButtonsSlot(short eventNumber);
+    void setJoystickAxisSlot(short eventNumber,short eventValue);
+
+    // Slots to deal with video stream
+    void setVideoStreamSlot(const QImage& img);
 
 signals:
     void setPingsSignal(int p500, int p20000);
+
+    void setJoystickButtonsSignal(short eventNumber);
+    void setJoystickAxisSignal(short eventNumber,short eventValue);
+
+    void setVideoStreamSignal(const QImage& img);
 
 };
 

@@ -176,6 +176,12 @@ public:
    * Returns true if the joystick was found and may be used, otherwise false.
    */
   bool isFound();
+
+  /**
+   * Returns true if the joystick was alive, otherwise false
+   *
+   */
+  bool isAlive();
   
   /**
    * Attempts to populate the provided JoystickEvent instance with data
@@ -202,13 +208,6 @@ public:
 
   RobotThread* robotThread;
   JoystickData* joystickData;
-
-private slots:
-  void buttonStateChangeSlots(int eventNumber);
-
-signals:
-  //void buttonStateChangeSignal(int eventNumber);
-
 
 };
 

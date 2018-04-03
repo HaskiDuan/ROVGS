@@ -19,33 +19,49 @@
  *I would like to extend my sincere appreciation to the developers of the tum_ardrone.
  **************************************************************************************/
 
-#include<gui.h>
+#ifndef VIDEOSTREAM_H_
+#define VIDEOSTREAM_H_
 
-GUIView::GUIView(QQuickView* parent):QQuickView(parent){
+#include <iostream>
+#include <cstdlib>
+#include <cvd/thread.h>
 
-}
+#include <QImage>
 
-GUIView::~GUIView(){
+#include <opencv2/opencv.hpp>
 
-}
+#include "PracticalSocket.h"
+#include "config.h"
 
-int GUIView::setUpView(const QObject* w ){
-    if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {
-        QSurfaceFormat f = this->format();
-        f.setProfile(QSurfaceFormat::CoreProfile);
-        f.setVersion(4, 4);
-        this->setFormat(f);
+#include "../robotthread.h"
+#include "../../rov_groundstation.h"
 
-        //
-        //new QQmlFileSelector(this->engine(), this);
+const uint32_t bufLength = 65540;
+const char* const defaultVideoStreamPort = "4444";
+/**
+ * @name: VideoStream
+ * @func: This class is for getting the video stream from the nanopi and display the video in the
+ * GUI
+ */
+class VideoStream:public CVD::Thread
+{
 
-        /*
-        this->setSource(QUrl("qrc:///dialcontrol.qml"));
-        if (this->status() == QQuickView::Error)
-            return -1;
-        this->setResizeMode(QQuickView::SizeRootObjectToView);
-        */
+private:
+    void run();
+    bool keepRunning;
 
-    }
-    return 0;
-}
+public:
+    VideoStream();
+    ~VideoStream();
+
+    void startVideoStreamRecv();
+    void stopVideoStreamRecv();
+
+    RobotThread* r;
+
+
+};
+
+QImage cvMat2QImage(const cv::Mat& mat);
+
+#endif

@@ -24,8 +24,7 @@
 #include <cvd/thread.h>
 
 #include "joystick/joystickdata.h"
-
-
+#include "connector/udpConnector.h"
 
 //Using forward declaration since we need to use the ROV_groundstation in this class
 //it's better to use forward declaration if we want to use a class in another class
@@ -33,7 +32,7 @@
 class ROV_groundstation;
 class GUIView;
 class Joystick;
-
+class VideoStream;
 
 //In c++, you are allowed to define functions inside a struct, it's pretty much like a
 //class, simply members in a struct are set as public by default
@@ -78,7 +77,13 @@ public:
     GUIView* view;
 
     Joystick* joy;
+    VideoStream*  v;
 
     struct ControlCommand cmd;
+
+    // Has-a
+    UDPConnector connector;
+
+
 };
 #endif // ROBOTPTHREAD_H

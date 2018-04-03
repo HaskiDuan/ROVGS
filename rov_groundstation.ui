@@ -9,17 +9,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
+    <width>1415</width>
     <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ROV_groundstation</string>
   </property>
-  <widget class="QGroupBox" name="groupBox">
+  <widget class="QGroupBox" name="ControlPanel">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>800</x>
      <y>20</y>
      <width>561</width>
      <height>371</height>
@@ -154,10 +154,10 @@
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2">
+  <widget class="QGroupBox" name="lightsControl">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>800</x>
      <y>410</y>
      <width>561</width>
      <height>111</height>
@@ -214,12 +214,12 @@
     <rect>
      <x>30</x>
      <y>20</y>
-     <width>521</width>
+     <width>721</width>
      <height>121</height>
     </rect>
    </property>
    <property name="title">
-    <string>ROV Monitor Panel</string>
+    <string>ROV State Monitor Panel</string>
    </property>
    <widget class="QLabel" name="labelROVPings">
     <property name="geometry">
@@ -232,6 +232,32 @@
     </property>
     <property name="text">
      <string>TextLabel</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="CamMoniter">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>180</y>
+     <width>721</width>
+     <height>481</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>ROV Camera Moniter</string>
+   </property>
+   <widget class="QLabel" name="labelROVcam">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>36</y>
+      <width>691</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>video</string>
     </property>
    </widget>
   </widget>

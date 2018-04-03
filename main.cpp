@@ -46,14 +46,17 @@ int main(int argc, char *argv[])
 
     //Set up the UI
     QApplication a(argc, argv);
+    //a.setQuitOnLastWindowClosed(true);
 
-    GUIView view;
+    //GUIView view;
 
     JoystickData d;
     ROV_groundstation w;
 
     qmlRegisterType<JoystickData>("Joystick.Control.Data",1,0,"ControlData");
 
+    ///Because I haven't understand the qml,so this groundstation will use default qt ui instead of qml
+    /*
     view.setUpView(&w);
     view.connect(view.engine(), &QQmlEngine::quit, &w, &QCoreApplication::quit);
     new QQmlFileSelector(view.engine(), &view);
@@ -64,8 +67,10 @@ int main(int argc, char *argv[])
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("cd",&d);
     view.show();
+    */
 
     w.setWindowTitle("ROV Ground Station");
+    //QObject::connect((QObject* )&w,SIGNAL(destroyed(QWidget*)),&a,&QApplication::quit);
 
     //make them communicate with each other
     r.gui = &w;
@@ -75,8 +80,8 @@ int main(int argc, char *argv[])
 
 
 
-    view.robotThread = &r;
-    view.pingThread  = &p;
+    //view.robotThread = &r;
+    //view.pingThread  = &p;
 
     //start the thread
     r.startSystem();

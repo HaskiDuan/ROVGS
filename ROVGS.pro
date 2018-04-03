@@ -23,15 +23,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# Add OpenCV lib
+INCLUDEPATH += /usr/local/include/opencv
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
 
 SOURCES += \
         main.cpp \
         rov_groundstation.cpp \
-    src/pingthread.cpp \
-    src/robotthread.cpp \
     src/joystick/joystick.cpp \
     gui.cpp \
-    src/joystick/joystickdata.cpp
+    src/joystick/joystickdata.cpp \
+    src/pingthread.cpp \
+    src/robotthread.cpp \
+    src/connector/udpConnector.cpp \
+    src/MAVLinkDecoder/decoder.cpp \
+    src/video/videoStream.cpp \
+    src/video/PracticalSocket.cpp
+
 
 RESOURCES += dialcontrol.qrc
 
@@ -39,9 +47,15 @@ HEADERS += \
         rov_groundstation.h \
     src/pingthread.h \
     src/robotthread.h \
-    src/joystick/joystick.h \
     gui.h \
-    src/joystick/joystickdata.h
+    src/joystick/joystick.h \
+    src/joystick/joystickdata.h \
+    src/connector/udpConnector.h \
+    src/MAVLinkDecoder/decoder.h \
+    src/communication/GSMAVLink.h \
+    src/video/videoStream.h \
+    src/video/config.h \
+    src/video/PracticalSocket.h
 
 
 FORMS += \
@@ -49,6 +63,14 @@ FORMS += \
 
 INCLUDEPATH += /usr/local/include \
                 /usr/local/include/cvd
+
+BASEDIR      = $$IN_PWD
+MAVLINKPATH_REL = src/mavlink/c_library_v2
+MAVLINKPATH = $$BASEDIR/$$MAVLINKPATH_REL
+MAVLINK_CONF = ardupilotmega
+
+INCLUDEPATH += $$MAVLINKPATH
+INCLUDEPATH += $$MAVLINKPATH/common
 
 LIBS += /usr/local/lib/libcvd.so\
         /usr/local/lib/libcvd.so.0

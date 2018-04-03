@@ -76,7 +76,6 @@ int main(int argc, char* argv[])
 	socklen_t fromlen;
 	int bytes_sent;
 	mavlink_message_t msg;
-	mavlink_joystick_control_t joystick_msg;
 	uint16_t len;
 	int i = 0;
 	//int success = 0;
@@ -106,7 +105,7 @@ int main(int argc, char* argv[])
 	memset(&locAddr, 0, sizeof(locAddr));
 	locAddr.sin_family = AF_INET;
 	locAddr.sin_addr.s_addr = INADDR_ANY;
-	locAddr.sin_port = htons(14551);
+	locAddr.sin_port = htons(14550);
 	
 	/* Bind the socket to port 14551 - necessary to receive packets from qgroundcontrol */ 
 	if (-1 == bind(sock,(struct sockaddr *)&locAddr, sizeof(struct sockaddr)))
@@ -133,7 +132,7 @@ int main(int argc, char* argv[])
 	memset(&gcAddr, 0, sizeof(gcAddr));
 	gcAddr.sin_family = AF_INET;
 	gcAddr.sin_addr.s_addr = inet_addr(target_ip);
-	gcAddr.sin_port = htons(14550);
+	gcAddr.sin_port = htons(14551);
 	
 	
 	
@@ -162,6 +161,10 @@ int main(int argc, char* argv[])
 		len = mavlink_msg_to_send_buffer(buf, &msg);
 		bytes_sent = sendto(sock, buf, len, 0, (struct sockaddr*)&gcAddr, sizeof(struct sockaddr_in));
 		
+
+		mavlink_msg_joystick_control_pack(1,250,&msg,11111,22222,12121,12345);
+		len = mavlink_msg_to_send_buffer(buf, &msg);
+		bytes_sent = sendto(sock, buf, len, 0, (struct sockaddr*)&gcAddr, sizeof(struct sockaddr_in));
 		
 		memset(buf, 0, BUFFER_LENGTH);
 		recsize = recvfrom(sock, (void *)buf, BUFFER_LENGTH, 0, (struct sockaddr *)&gcAddr, &fromlen);
@@ -180,11 +183,7 @@ int main(int argc, char* argv[])
 				{
 					// Packet received
 					printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
-					if(msg.msgid == 331){
-						mavlink_msg_joystick_control_decode(&msg,&joystick_msg);
-						printf("\nx acc: %d, y acc: %d, z acc: %d, yaw acc: %d\n",joystick_msg.x_acc,joystick_msg.y_acc,joystick_msg.z_acc,joystick_msg.yaw_acc);
-					}
-}
+				}
 			}
 			printf("\n");
 		}

@@ -72,6 +72,10 @@ bool Joystick::isFound()
   return _fd >= 0;
 }
 
+bool Joystick::isAlive(){
+  return fcntl(_fd, F_GETFL)>=0;
+}
+
 Joystick::~Joystick()
 {
   std::cout << "destructing the JoystickThread class object and free the memory" << std::endl;
@@ -98,44 +102,34 @@ void Joystick::stopJoystickReading(){
   join();
 }
 
-void Joystick::setButtonState(int eventNumber){
-    //emit buttonStateChangeSignal(eventNumber);
-}
-
-/*slot function*/
-void Joystick::buttonStateChangeSlots(int eventNumber){
-    this->robotThread->gui->changeButtonState(eventNumber);
-}
 
 void Joystick::run(){
     std::cout << "Starting the joystick reading thread" << std::endl;
 
     //open the Joystick serial port
-    if(!this->isFound()){
+
+    while(!isFound() && keepRunning){
         std::cout << "Open joystick failed" << std::endl;
-        exit(1);
-    }
-    else{
-        std::cout << "Open joystick success" << std::endl;
+        openPath("/dev/input/js1");
+        sleep(1000);
     }
 
+    std::cout << "Open joystick success" << std::endl;
 
-    //register the JoystickData class in order to use it in qml
-    //GUIView* view = this->robotThread->view;
-
-    //view->rootContext()->setContextProperty("controldata",&tempData);
-
-    //QQuickItem* root = view->rootObject();
-    //std::cout << "OK here!" <<std::endl;
-    //QObject* object = root->findChild<QObject*>("container");
-
-    //if(object){
-        //std::cout << "find the proper object!"<<std::endl;
-    //}
-
+    ROV_groundstation* gui = this->robotThread->gui;
     while(keepRunning){
-        //Restrict rate
-        usleep(1000);
+        /*
+         * TODO: detect whether the joystick is still alive or not, but fcntl()doesn't have such function, it can only
+         * detect whether the fd is bad or not
+        */
+        //
+
+        if(fcntl(_fd,F_GETFL) == -1){
+            std::cout << "lost the joystick" << std::endl;
+            close(_fd);
+            openPath("/dev/input/js1");
+            continue;
+        }
 
         //Attempt to sample an event from the joystick
         JoystickEvent event;
@@ -145,12 +139,10 @@ void Joystick::run(){
             if(event.isButton()){
                 std::cout << "Button " << int(event.number) << " is " << (event.value == 0 ? "up" : "down" ) <<std::endl;
                 if(event.value == 0)
-                    //setButtonState(event.number);
-                    this->robotThread->gui->changeButtonState(event.number);
+                    gui->setJoystickButtons(event.number);
             }
             else if (event.isAxis()){
-                std::cout <<"Axis " << int(event.number) << " is at position " << event.value << std::endl;
-                this->robotThread->gui->setaccValue(event.number,event.value);
+                gui->setJoystickAxis(event.number,event.value);
             }
 
         }
