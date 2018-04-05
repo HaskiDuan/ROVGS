@@ -160,11 +160,11 @@
      <x>800</x>
      <y>410</y>
      <width>561</width>
-     <height>111</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
-    <string>Lights Control</string>
+    <string>Lights/Motor Control</string>
    </property>
    <widget class="QCheckBox" name="lightsStateCheckBox">
     <property name="geometry">
@@ -206,6 +206,19 @@
     </property>
     <property name="text">
      <string>Brightness</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>90</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Motor Unlock</string>
     </property>
    </widget>
   </widget>

@@ -110,7 +110,10 @@ void Joystick::run(){
 
     while(!isFound() && keepRunning){
         std::cout << "Open joystick failed" << std::endl;
+#if defined(Q_OS_WIN32)
+#elif defined(Q_OS_LINUX)
         openPath("/dev/input/js1");
+#endif
         sleep(1000);
     }
 

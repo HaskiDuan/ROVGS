@@ -38,7 +38,8 @@ SOURCES += \
     src/connector/udpConnector.cpp \
     src/MAVLinkDecoder/decoder.cpp \
     src/video/videoStream.cpp \
-    src/video/PracticalSocket.cpp
+    src/video/PracticalSocket.cpp \
+    src/timer/timer.cpp
 
 
 RESOURCES += dialcontrol.qrc
@@ -55,7 +56,8 @@ HEADERS += \
     src/communication/GSMAVLink.h \
     src/video/videoStream.h \
     src/video/config.h \
-    src/video/PracticalSocket.h
+    src/video/PracticalSocket.h \
+    src/timer/timer.h
 
 
 FORMS += \
@@ -70,7 +72,7 @@ MAVLINKPATH = $$BASEDIR/$$MAVLINKPATH_REL
 MAVLINK_CONF = ardupilotmega
 
 INCLUDEPATH += $$MAVLINKPATH
-INCLUDEPATH += $$MAVLINKPATH/common
+INCLUDEPATH += $$MAVLINKPATH/ROV
 
 LIBS += /usr/local/lib/libcvd.so\
         /usr/local/lib/libcvd.so.0

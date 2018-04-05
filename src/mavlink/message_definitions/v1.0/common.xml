@@ -4559,28 +4559,5 @@
       <field type="uint16_t" name="max_distance" units="cm">Maximum distance the sensor can measure in centimeters.</field>
     </message>
 
-    <message id="331" name="JOYSTICK_CONTROL">
-      <description>Control signals from the joystick, including X, Y, Z, Yaw and key values</description>
-      <field type="int16_t" name="x_acc" units="scale">The x control signal from joystic.</field>
-      <field type="int16_t" name="y_acc" units="scale">The y control signal from joystic.</field>
-      <field type="int16_t" name="z_acc" units="scale">The z control signal from joystic.</field>
-      <field type="int16_t" name="yaw_acc" units="scale">The yaw control signal from joystic.</field>
-      <field type="uint8_t" name="lights_up" units="scale">The light turn up signal from joystick>.</field>
-      <field type="uint8_t" name="lights_down" units="scale">The light turn down signal from joystick>.</field>
-    </message>
-
-    <message id="332" name="SENSOR_DATA">
-      <description>Sensor data from mainboard,including MS5837 and JY901</description>
-      <field type="float" name="depth" units="m">Depth of the ROV</field>
-      <field type="float" name="temperature" units="deg">Temperature of the ROV</field>
-
-      <field type="float" name="roll" units="deg">roll data of the ROV</field>
-      <field type="float" name="yaw" units="deg">yaw data of the ROV</field>
-      <field type="float" name="pitch" units="deg">pitch data of the ROV</field>
-
-      <field type="float" name="roll_acc" units="deg/s^2">roll acceleration of the ROV</field>
-      <field type="float" name="yaw_acc" units="deg/s^2">yaw acceleration of the ROV</field>
-      <field type="float" name="pitch_acc" units="deg/s^2">pitch acceleration of the ROV</field>
-    </message>
   </messages>
 </mavlink>
