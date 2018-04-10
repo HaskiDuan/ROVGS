@@ -107,6 +107,8 @@ void ROV_groundstation::setPingsSlot(int p500, int p20000){
     ui->labelROVPings->setText(buf);
 }
 
+
+/*joystick event process*/
 void ROV_groundstation::setJoystickButtonsSlot(short eventNumber){
     //Print butten state on the gui
     changeButtonState(eventNumber);

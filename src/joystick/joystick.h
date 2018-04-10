@@ -34,6 +34,9 @@
 #include <QObject>
 #include <QQuickItem>
 
+//mavlink message header
+#include "mavlink.h"
+
 #define JS_EVENT_BUTTON 0x01 // button pressed/released
 #define JS_EVENT_AXIS   0x02 // joystick moved
 #define JS_EVENT_INIT   0x80 // initial state of device
@@ -136,6 +139,8 @@ private:
 
   bool keepRunning;
 
+  mavlink_message_t msg;
+
   
 public:
   ~Joystick();
@@ -205,6 +210,8 @@ public:
    * emit the button change signal when the buttons are pushed
    */
   void setButtonState(int eventNumber);
+
+  void setControlMsgPack(int eventNumber,int eventValue);
 
   RobotThread* robotThread;
   JoystickData* joystickData;

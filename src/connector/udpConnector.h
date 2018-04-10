@@ -24,7 +24,7 @@
 #include <stdbool.h> /* required for the definition of bool in C99 */
 #endif
 
-#include"../mavlink/c_library_v2/common/mavlink.h"
+#include"mavlink.h"
 
 #include <cvd/thread.h>
 

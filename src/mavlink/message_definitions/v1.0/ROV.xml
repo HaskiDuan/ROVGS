@@ -16,18 +16,44 @@
                   <field type="uint8_t" name="lights_down" units="scale">The light turn down signal from joystick>.</field>
                 </message>
 
-                <message id="151" name="SENSOR_DATA">
-                  <description>Sensor data from mainboard,including MS5837 and JY901</description>
+                <message id="151" name="MS5837_DATA">
+                  <description>MS5837 deep sensor on mainboard</description>
                   <field type="float" name="depth" units="m">Depth of the ROV</field>
                   <field type="float" name="temperature" units="deg">Temperature of the ROV</field>
+                  <field type="float" name="pressure" units="Pa">pressure of the ROV</field>
+
+                </message>
+
+                <message id="152" name="JY901_DATA">
+                  <description>JY901 IMU on mainboard</description>
+
 
                   <field type="float" name="roll" units="deg">roll data of the ROV</field>
                   <field type="float" name="yaw" units="deg">yaw data of the ROV</field>
                   <field type="float" name="pitch" units="deg">pitch data of the ROV</field>
 
-                  <field type="float" name="roll_acc" units="deg/s^2">roll acceleration of the ROV</field>
-                  <field type="float" name="yaw_acc" units="deg/s^2">yaw acceleration of the ROV</field>
-                  <field type="float" name="pitch_acc" units="deg/s^2">pitch acceleration of the ROV</field>
+                  <field type="float" name="roll_v" units="deg/s">roll velocity of the ROV</field>
+                  <field type="float" name="yaw_v" units="deg/s">yaw velocity of the ROV</field>
+                  <field type="float" name="pitch_v" units="deg/s">pitch velocity of the ROV</field>
+
+                  <field type="float" name="x_acc" units="m/s^2">x acceleration of the ROV</field>
+                  <field type="float" name="y_acc" units="m/s^2">y acceleration of the ROV</field>
+                  <field type="float" name="z_acc" units="m/s^2">z acceleration of the ROV</field>
+
+                  <field type="float" name="x_m" units="mG">x magnetic field of the ROV</field>
+                  <field type="float" name="y_m" units="mG">y magnetic field of the ROV</field>
+                  <field type="float" name="z_m" units="mG">z magnetic field of the ROV</field>
+                </message>
+
+                <message id="153" name="SENSOR_STATUS">
+                  <description>Sensor status of mainboard,including MS5837 and JY901</description>
+                  <field type="uint8_t" name="MS5837_status" units="">working status of the MS5837 sensor</field>
+                  <field type="uint8_t" name="JY901_status" units="">working status of the JY901 sensor</field>
+                </message>
+
+                <message id="154" name="LIGHT_STATUS">
+                  <description>Light status of the two light</description>
+                  <field type="uint8_t" name="light_status" units="">light brightness</field>
                 </message>
         </messages>
 </mavlink>

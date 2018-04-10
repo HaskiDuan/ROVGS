@@ -7,6 +7,7 @@ MAVPACKED(
 typedef struct __mavlink_sensor_data_t {
  float depth; /*< Depth of the ROV*/
  float temperature; /*< Temperature of the ROV*/
+ float pressure; /*< pressure of the ROV*/
  float roll; /*< roll data of the ROV*/
  float yaw; /*< yaw data of the ROV*/
  float pitch; /*< pitch data of the ROV*/
@@ -15,13 +16,13 @@ typedef struct __mavlink_sensor_data_t {
  float pitch_acc; /*< pitch acceleration of the ROV*/
 }) mavlink_sensor_data_t;
 
-#define MAVLINK_MSG_ID_SENSOR_DATA_LEN 32
-#define MAVLINK_MSG_ID_SENSOR_DATA_MIN_LEN 32
-#define MAVLINK_MSG_ID_151_LEN 32
-#define MAVLINK_MSG_ID_151_MIN_LEN 32
+#define MAVLINK_MSG_ID_SENSOR_DATA_LEN 36
+#define MAVLINK_MSG_ID_SENSOR_DATA_MIN_LEN 36
+#define MAVLINK_MSG_ID_151_LEN 36
+#define MAVLINK_MSG_ID_151_MIN_LEN 36
 
-#define MAVLINK_MSG_ID_SENSOR_DATA_CRC 97
-#define MAVLINK_MSG_ID_151_CRC 97
+#define MAVLINK_MSG_ID_SENSOR_DATA_CRC 178
+#define MAVLINK_MSG_ID_151_CRC 178
 
 
 
@@ -29,29 +30,31 @@ typedef struct __mavlink_sensor_data_t {
 #define MAVLINK_MESSAGE_INFO_SENSOR_DATA { \
     151, \
     "SENSOR_DATA", \
-    8, \
+    9, \
     {  { "depth", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_sensor_data_t, depth) }, \
          { "temperature", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_sensor_data_t, temperature) }, \
-         { "roll", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_sensor_data_t, roll) }, \
-         { "yaw", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_sensor_data_t, yaw) }, \
-         { "pitch", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_sensor_data_t, pitch) }, \
-         { "roll_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_sensor_data_t, roll_acc) }, \
-         { "yaw_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_sensor_data_t, yaw_acc) }, \
-         { "pitch_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_sensor_data_t, pitch_acc) }, \
+         { "pressure", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_sensor_data_t, pressure) }, \
+         { "roll", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_sensor_data_t, roll) }, \
+         { "yaw", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_sensor_data_t, yaw) }, \
+         { "pitch", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_sensor_data_t, pitch) }, \
+         { "roll_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_sensor_data_t, roll_acc) }, \
+         { "yaw_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_sensor_data_t, yaw_acc) }, \
+         { "pitch_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_sensor_data_t, pitch_acc) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_SENSOR_DATA { \
     "SENSOR_DATA", \
-    8, \
+    9, \
     {  { "depth", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_sensor_data_t, depth) }, \
          { "temperature", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_sensor_data_t, temperature) }, \
-         { "roll", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_sensor_data_t, roll) }, \
-         { "yaw", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_sensor_data_t, yaw) }, \
-         { "pitch", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_sensor_data_t, pitch) }, \
-         { "roll_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_sensor_data_t, roll_acc) }, \
-         { "yaw_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_sensor_data_t, yaw_acc) }, \
-         { "pitch_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_sensor_data_t, pitch_acc) }, \
+         { "pressure", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_sensor_data_t, pressure) }, \
+         { "roll", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_sensor_data_t, roll) }, \
+         { "yaw", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_sensor_data_t, yaw) }, \
+         { "pitch", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_sensor_data_t, pitch) }, \
+         { "roll_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_sensor_data_t, roll_acc) }, \
+         { "yaw_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_sensor_data_t, yaw_acc) }, \
+         { "pitch_acc", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_sensor_data_t, pitch_acc) }, \
          } \
 }
 #endif
@@ -64,6 +67,7 @@ typedef struct __mavlink_sensor_data_t {
  *
  * @param depth Depth of the ROV
  * @param temperature Temperature of the ROV
+ * @param pressure pressure of the ROV
  * @param roll roll data of the ROV
  * @param yaw yaw data of the ROV
  * @param pitch pitch data of the ROV
@@ -73,24 +77,26 @@ typedef struct __mavlink_sensor_data_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_sensor_data_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               float depth, float temperature, float roll, float yaw, float pitch, float roll_acc, float yaw_acc, float pitch_acc)
+                               float depth, float temperature, float pressure, float roll, float yaw, float pitch, float roll_acc, float yaw_acc, float pitch_acc)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_SENSOR_DATA_LEN];
     _mav_put_float(buf, 0, depth);
     _mav_put_float(buf, 4, temperature);
-    _mav_put_float(buf, 8, roll);
-    _mav_put_float(buf, 12, yaw);
-    _mav_put_float(buf, 16, pitch);
-    _mav_put_float(buf, 20, roll_acc);
-    _mav_put_float(buf, 24, yaw_acc);
-    _mav_put_float(buf, 28, pitch_acc);
+    _mav_put_float(buf, 8, pressure);
+    _mav_put_float(buf, 12, roll);
+    _mav_put_float(buf, 16, yaw);
+    _mav_put_float(buf, 20, pitch);
+    _mav_put_float(buf, 24, roll_acc);
+    _mav_put_float(buf, 28, yaw_acc);
+    _mav_put_float(buf, 32, pitch_acc);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_SENSOR_DATA_LEN);
 #else
     mavlink_sensor_data_t packet;
     packet.depth = depth;
     packet.temperature = temperature;
+    packet.pressure = pressure;
     packet.roll = roll;
     packet.yaw = yaw;
     packet.pitch = pitch;
@@ -113,6 +119,7 @@ static inline uint16_t mavlink_msg_sensor_data_pack(uint8_t system_id, uint8_t c
  * @param msg The MAVLink message to compress the data into
  * @param depth Depth of the ROV
  * @param temperature Temperature of the ROV
+ * @param pressure pressure of the ROV
  * @param roll roll data of the ROV
  * @param yaw yaw data of the ROV
  * @param pitch pitch data of the ROV
@@ -123,24 +130,26 @@ static inline uint16_t mavlink_msg_sensor_data_pack(uint8_t system_id, uint8_t c
  */
 static inline uint16_t mavlink_msg_sensor_data_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   float depth,float temperature,float roll,float yaw,float pitch,float roll_acc,float yaw_acc,float pitch_acc)
+                                   float depth,float temperature,float pressure,float roll,float yaw,float pitch,float roll_acc,float yaw_acc,float pitch_acc)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_SENSOR_DATA_LEN];
     _mav_put_float(buf, 0, depth);
     _mav_put_float(buf, 4, temperature);
-    _mav_put_float(buf, 8, roll);
-    _mav_put_float(buf, 12, yaw);
-    _mav_put_float(buf, 16, pitch);
-    _mav_put_float(buf, 20, roll_acc);
-    _mav_put_float(buf, 24, yaw_acc);
-    _mav_put_float(buf, 28, pitch_acc);
+    _mav_put_float(buf, 8, pressure);
+    _mav_put_float(buf, 12, roll);
+    _mav_put_float(buf, 16, yaw);
+    _mav_put_float(buf, 20, pitch);
+    _mav_put_float(buf, 24, roll_acc);
+    _mav_put_float(buf, 28, yaw_acc);
+    _mav_put_float(buf, 32, pitch_acc);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_SENSOR_DATA_LEN);
 #else
     mavlink_sensor_data_t packet;
     packet.depth = depth;
     packet.temperature = temperature;
+    packet.pressure = pressure;
     packet.roll = roll;
     packet.yaw = yaw;
     packet.pitch = pitch;
@@ -165,7 +174,7 @@ static inline uint16_t mavlink_msg_sensor_data_pack_chan(uint8_t system_id, uint
  */
 static inline uint16_t mavlink_msg_sensor_data_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_sensor_data_t* sensor_data)
 {
-    return mavlink_msg_sensor_data_pack(system_id, component_id, msg, sensor_data->depth, sensor_data->temperature, sensor_data->roll, sensor_data->yaw, sensor_data->pitch, sensor_data->roll_acc, sensor_data->yaw_acc, sensor_data->pitch_acc);
+    return mavlink_msg_sensor_data_pack(system_id, component_id, msg, sensor_data->depth, sensor_data->temperature, sensor_data->pressure, sensor_data->roll, sensor_data->yaw, sensor_data->pitch, sensor_data->roll_acc, sensor_data->yaw_acc, sensor_data->pitch_acc);
 }
 
 /**
@@ -179,7 +188,7 @@ static inline uint16_t mavlink_msg_sensor_data_encode(uint8_t system_id, uint8_t
  */
 static inline uint16_t mavlink_msg_sensor_data_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_sensor_data_t* sensor_data)
 {
-    return mavlink_msg_sensor_data_pack_chan(system_id, component_id, chan, msg, sensor_data->depth, sensor_data->temperature, sensor_data->roll, sensor_data->yaw, sensor_data->pitch, sensor_data->roll_acc, sensor_data->yaw_acc, sensor_data->pitch_acc);
+    return mavlink_msg_sensor_data_pack_chan(system_id, component_id, chan, msg, sensor_data->depth, sensor_data->temperature, sensor_data->pressure, sensor_data->roll, sensor_data->yaw, sensor_data->pitch, sensor_data->roll_acc, sensor_data->yaw_acc, sensor_data->pitch_acc);
 }
 
 /**
@@ -188,6 +197,7 @@ static inline uint16_t mavlink_msg_sensor_data_encode_chan(uint8_t system_id, ui
  *
  * @param depth Depth of the ROV
  * @param temperature Temperature of the ROV
+ * @param pressure pressure of the ROV
  * @param roll roll data of the ROV
  * @param yaw yaw data of the ROV
  * @param pitch pitch data of the ROV
@@ -197,24 +207,26 @@ static inline uint16_t mavlink_msg_sensor_data_encode_chan(uint8_t system_id, ui
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_sensor_data_send(mavlink_channel_t chan, float depth, float temperature, float roll, float yaw, float pitch, float roll_acc, float yaw_acc, float pitch_acc)
+static inline void mavlink_msg_sensor_data_send(mavlink_channel_t chan, float depth, float temperature, float pressure, float roll, float yaw, float pitch, float roll_acc, float yaw_acc, float pitch_acc)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_SENSOR_DATA_LEN];
     _mav_put_float(buf, 0, depth);
     _mav_put_float(buf, 4, temperature);
-    _mav_put_float(buf, 8, roll);
-    _mav_put_float(buf, 12, yaw);
-    _mav_put_float(buf, 16, pitch);
-    _mav_put_float(buf, 20, roll_acc);
-    _mav_put_float(buf, 24, yaw_acc);
-    _mav_put_float(buf, 28, pitch_acc);
+    _mav_put_float(buf, 8, pressure);
+    _mav_put_float(buf, 12, roll);
+    _mav_put_float(buf, 16, yaw);
+    _mav_put_float(buf, 20, pitch);
+    _mav_put_float(buf, 24, roll_acc);
+    _mav_put_float(buf, 28, yaw_acc);
+    _mav_put_float(buf, 32, pitch_acc);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SENSOR_DATA, buf, MAVLINK_MSG_ID_SENSOR_DATA_MIN_LEN, MAVLINK_MSG_ID_SENSOR_DATA_LEN, MAVLINK_MSG_ID_SENSOR_DATA_CRC);
 #else
     mavlink_sensor_data_t packet;
     packet.depth = depth;
     packet.temperature = temperature;
+    packet.pressure = pressure;
     packet.roll = roll;
     packet.yaw = yaw;
     packet.pitch = pitch;
@@ -234,7 +246,7 @@ static inline void mavlink_msg_sensor_data_send(mavlink_channel_t chan, float de
 static inline void mavlink_msg_sensor_data_send_struct(mavlink_channel_t chan, const mavlink_sensor_data_t* sensor_data)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_sensor_data_send(chan, sensor_data->depth, sensor_data->temperature, sensor_data->roll, sensor_data->yaw, sensor_data->pitch, sensor_data->roll_acc, sensor_data->yaw_acc, sensor_data->pitch_acc);
+    mavlink_msg_sensor_data_send(chan, sensor_data->depth, sensor_data->temperature, sensor_data->pressure, sensor_data->roll, sensor_data->yaw, sensor_data->pitch, sensor_data->roll_acc, sensor_data->yaw_acc, sensor_data->pitch_acc);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SENSOR_DATA, (const char *)sensor_data, MAVLINK_MSG_ID_SENSOR_DATA_MIN_LEN, MAVLINK_MSG_ID_SENSOR_DATA_LEN, MAVLINK_MSG_ID_SENSOR_DATA_CRC);
 #endif
@@ -248,24 +260,26 @@ static inline void mavlink_msg_sensor_data_send_struct(mavlink_channel_t chan, c
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_sensor_data_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float depth, float temperature, float roll, float yaw, float pitch, float roll_acc, float yaw_acc, float pitch_acc)
+static inline void mavlink_msg_sensor_data_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  float depth, float temperature, float pressure, float roll, float yaw, float pitch, float roll_acc, float yaw_acc, float pitch_acc)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
     _mav_put_float(buf, 0, depth);
     _mav_put_float(buf, 4, temperature);
-    _mav_put_float(buf, 8, roll);
-    _mav_put_float(buf, 12, yaw);
-    _mav_put_float(buf, 16, pitch);
-    _mav_put_float(buf, 20, roll_acc);
-    _mav_put_float(buf, 24, yaw_acc);
-    _mav_put_float(buf, 28, pitch_acc);
+    _mav_put_float(buf, 8, pressure);
+    _mav_put_float(buf, 12, roll);
+    _mav_put_float(buf, 16, yaw);
+    _mav_put_float(buf, 20, pitch);
+    _mav_put_float(buf, 24, roll_acc);
+    _mav_put_float(buf, 28, yaw_acc);
+    _mav_put_float(buf, 32, pitch_acc);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_SENSOR_DATA, buf, MAVLINK_MSG_ID_SENSOR_DATA_MIN_LEN, MAVLINK_MSG_ID_SENSOR_DATA_LEN, MAVLINK_MSG_ID_SENSOR_DATA_CRC);
 #else
     mavlink_sensor_data_t *packet = (mavlink_sensor_data_t *)msgbuf;
     packet->depth = depth;
     packet->temperature = temperature;
+    packet->pressure = pressure;
     packet->roll = roll;
     packet->yaw = yaw;
     packet->pitch = pitch;
@@ -304,13 +318,23 @@ static inline float mavlink_msg_sensor_data_get_temperature(const mavlink_messag
 }
 
 /**
+ * @brief Get field pressure from sensor_data message
+ *
+ * @return pressure of the ROV
+ */
+static inline float mavlink_msg_sensor_data_get_pressure(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_float(msg,  8);
+}
+
+/**
  * @brief Get field roll from sensor_data message
  *
  * @return roll data of the ROV
  */
 static inline float mavlink_msg_sensor_data_get_roll(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  8);
+    return _MAV_RETURN_float(msg,  12);
 }
 
 /**
@@ -320,7 +344,7 @@ static inline float mavlink_msg_sensor_data_get_roll(const mavlink_message_t* ms
  */
 static inline float mavlink_msg_sensor_data_get_yaw(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  12);
+    return _MAV_RETURN_float(msg,  16);
 }
 
 /**
@@ -330,7 +354,7 @@ static inline float mavlink_msg_sensor_data_get_yaw(const mavlink_message_t* msg
  */
 static inline float mavlink_msg_sensor_data_get_pitch(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  16);
+    return _MAV_RETURN_float(msg,  20);
 }
 
 /**
@@ -340,7 +364,7 @@ static inline float mavlink_msg_sensor_data_get_pitch(const mavlink_message_t* m
  */
 static inline float mavlink_msg_sensor_data_get_roll_acc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  20);
+    return _MAV_RETURN_float(msg,  24);
 }
 
 /**
@@ -350,7 +374,7 @@ static inline float mavlink_msg_sensor_data_get_roll_acc(const mavlink_message_t
  */
 static inline float mavlink_msg_sensor_data_get_yaw_acc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  24);
+    return _MAV_RETURN_float(msg,  28);
 }
 
 /**
@@ -360,7 +384,7 @@ static inline float mavlink_msg_sensor_data_get_yaw_acc(const mavlink_message_t*
  */
 static inline float mavlink_msg_sensor_data_get_pitch_acc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  28);
+    return _MAV_RETURN_float(msg,  32);
 }
 
 /**
@@ -374,6 +398,7 @@ static inline void mavlink_msg_sensor_data_decode(const mavlink_message_t* msg, 
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     sensor_data->depth = mavlink_msg_sensor_data_get_depth(msg);
     sensor_data->temperature = mavlink_msg_sensor_data_get_temperature(msg);
+    sensor_data->pressure = mavlink_msg_sensor_data_get_pressure(msg);
     sensor_data->roll = mavlink_msg_sensor_data_get_roll(msg);
     sensor_data->yaw = mavlink_msg_sensor_data_get_yaw(msg);
     sensor_data->pitch = mavlink_msg_sensor_data_get_pitch(msg);

@@ -5,7 +5,7 @@
 
 #include "../communication/GSMAVLink.h"
 #include <mavlink.h>
-#include <mavlink_get_info.h>
+//#include <mavlink_get_info.h>
 #include <QObject>
 
 

@@ -145,6 +145,8 @@ void Joystick::run(){
                     gui->setJoystickButtons(event.number);
             }
             else if (event.isAxis()){
+                //mavlink_msg_heartbeat_pack();
+                //mavlink_msg_joystick_pack();
                 gui->setJoystickAxis(event.number,event.value);
             }
 
