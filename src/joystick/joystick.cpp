@@ -140,7 +140,9 @@ void Joystick::run(){
 
         if(this->sample(&event)){
             if(event.isButton()){
+#ifdef  QT_DEBUG
                 std::cout << "Button " << int(event.number) << " is " << (event.value == 0 ? "up" : "down" ) <<std::endl;
+#endif
                 if(event.value == 0)
                     gui->setJoystickButtons(event.number);
             }

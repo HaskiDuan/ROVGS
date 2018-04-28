@@ -33,11 +33,11 @@ double parsePingResults(std::string s){
 }
 
 void PingThread::run(){
-    std::cout << "Starting the network control thread" << std::endl;
+    std::cout << "Starting the network conrtol thread: ping thread." << std::endl;
 
     //20000 bytes and 500 bytes
-    sprintf(pingCommand20000,"ping -c 1 -s 20000 -w 1 192.168.0.101");
-    sprintf(pingCommand500,"ping -c 1 -s 500 -w 1 192.168.0.101");
+    sprintf(pingCommand20000,"ping -c 1 -s 20000 -w 1 192.168.0.102");
+    sprintf(pingCommand500,"ping -c 1 -s 500 -w 1 192.168.0.102");
     FILE *p;
 
     measure = true;
@@ -63,9 +63,9 @@ void PingThread::run(){
 
             double res500 = parsePingResults(line1);
             double res20000 = parsePingResults(line2);
-
+#ifdef QT_DEBUG
             std::cout << "new ping values: 500 ->" << res500 << " 20000 ->" << res20000 << std::endl;
-
+#endif
             //clip between 10 and 1000.
             res500 = std::min(1000.0,std::max(10.0,res500));
             res20000 = std::min(1000.0,std::max(10.0,res20000));

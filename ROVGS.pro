@@ -25,7 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Add OpenCV lib
 INCLUDEPATH += /usr/local/include/opencv
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lrt
 
 SOURCES += \
         main.cpp \
@@ -39,7 +39,7 @@ SOURCES += \
     src/MAVLinkDecoder/decoder.cpp \
     src/video/videoStream.cpp \
     src/video/PracticalSocket.cpp \
-    src/timer/timer.cpp
+    src/timer/GStimer.cpp
 
 
 RESOURCES += dialcontrol.qrc
@@ -57,7 +57,7 @@ HEADERS += \
     src/video/videoStream.h \
     src/video/config.h \
     src/video/PracticalSocket.h \
-    src/timer/timer.h
+    src/timer/GStimer.h
 
 
 FORMS += \

@@ -51,7 +51,7 @@
 
 /* This assumes you have the mavlink headers on your include path
  or in the same folder as this source file */
-#include "../../c_library_v2/common/mavlink.h"
+#include "../../c_library_v2/ROV/mavlink.h"
 
 
 #define BUFFER_LENGTH 2041 // minimum buffer size that can be used with qnx (I don't know why)
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 	socklen_t fromlen;
 	int bytes_sent;
 	mavlink_message_t msg;
-	mavlink_joystick_control_t joystick_msg;
+	//mavlink_joystick_control_t joystick_msg;
 	uint16_t len;
 	int i = 0;
 	//int success = 0;
@@ -180,9 +180,10 @@ int main(int argc, char* argv[])
 				{
 					// Packet received
 					printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
-					if(msg.msgid == 331){
-						mavlink_msg_joystick_control_decode(&msg,&joystick_msg);
-						printf("\nx acc: %d, y acc: %d, z acc: %d, yaw acc: %d\n",joystick_msg.x_acc,joystick_msg.y_acc,joystick_msg.z_acc,joystick_msg.yaw_acc);
+					if(msg.msgid == MAVLINK_MSG_ID_MS5837_DATA){
+						//mavlink_msg_joystick_control_decode(&msg,&joystick_msg);
+						//printf("\nx acc: %d, y acc: %d, z acc: %d, yaw acc: %d\n",joystick_msg.x_acc,joystick_msg.y_acc,joystick_msg.z_acc,joystick_msg.yaw_acc);
+						printf("ms5837 data received\n");
 					}
 }
 			}

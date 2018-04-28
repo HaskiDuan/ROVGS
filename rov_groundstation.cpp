@@ -116,7 +116,9 @@ void ROV_groundstation::setJoystickButtonsSlot(short eventNumber){
 
 void ROV_groundstation::setJoystickAxisSlot(short eventNumber, short eventValue){
     //Show the axis state on the GUI
+#ifdef QT_DEBUG
     std::cout <<"Axis " << int(eventNumber) << " is at position " << eventValue << std::endl;
+#endif
     setAccValue(eventNumber,eventValue);
 }
 

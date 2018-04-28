@@ -42,6 +42,7 @@ void VideoStream::stopVideoStreamRecv(){
 void VideoStream::run(){
     unsigned short servPort = atoi(defaultVideoStreamPort);
     //cv::namedWindow("recv",CV_WINDOW_AUTOSIZE);
+    std::cout << "Starting videostream reading thread: videostream thread."<< std::endl;
     try{
         UDPSocket sock(servPort);
 

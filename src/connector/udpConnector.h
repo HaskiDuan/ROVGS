@@ -1,3 +1,5 @@
+/*remember to add -lrt compiler options in ROVGS.pro*/
+
 #ifndef UDPCONNECTOR_H_
 #define UDPCONNECTOR_H_
 
@@ -13,6 +15,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <time.h>
+#include <signal.h>
 #if (defined __QNX__) | (defined __QNXNTO__)
 /* QNX specific headers */
 #include <unix.h>
@@ -28,10 +31,16 @@
 
 #include <cvd/thread.h>
 
+#include <QObject>
+
+#include "../timer/GStimer.h"
+
 const short bufferSize = 2041;
-const std::string defaultIp = "127.0.0.1";
+const std::string defaultIp = "192.168.0.102";
 const int defaultTargetPort = 14550;
 const int defaultLocalPort = 14551;
+
+
 
 uint64_t microsSinceEpoch();
 
@@ -72,6 +81,13 @@ public:
 
     int networkInit();
 
+    int _send(int mavlinkMessageID);
+    void _receive();
+
+    //static void timerHandler(int sig, siginfo_t *si, void *uc);
+
+    int UDPmakeTimer(timer_t *timerID, int expireMS, int intervalMS);
+
     /**
      * @brief startUDPConnection
      * start the UDP Connection thread
@@ -84,9 +100,9 @@ public:
      */
     void stopUDPConnection();
 
-    //send test
-    int _send();
-    void _receive();
+
+
+
 
 
 private:
@@ -110,8 +126,10 @@ private:
     uint16_t len;
 
 
-
 };
+
+static void UDPtimerHandler(int sig, siginfo_t *si, void *uc, UDPConnector* connector);
+
 
 
 #endif 

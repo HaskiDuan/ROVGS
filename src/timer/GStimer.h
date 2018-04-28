@@ -1,6 +1,12 @@
 #include<time.h>
 #include<string>
 #include<iostream>
+#include <signal.h>
+
+
+typedef struct sigevent Sigevent;
+typedef struct itimerspec Itimerspec;
+typedef struct sigaction Sigaction;
 
 class Timer{
 private:
@@ -15,3 +21,9 @@ public:
 
 
 };
+
+//deal with the periodically tasks
+//void timerHandler(int sig,siginfo_t *si, void *uc);
+
+//initial a timer
+int makeTimer(timer_t *timerID, int expireMS, int intervalMS);

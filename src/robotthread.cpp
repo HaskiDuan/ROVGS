@@ -57,10 +57,10 @@ void RobotThread::stopSystem(){
 
 //the thread function
 void RobotThread::run(){
-    std::cout << "Starting the robot control thread" << std::endl;
+    std::cout << "Starting the robot control thread: robotthread." << std::endl;
 
     //Let the joystick communicate with the robot thread
-    Joystick joy("/dev/input/js1");
+    Joystick joy("/dev/input/js2");
     joy.robotThread = this;
     this->joy = &joy;
 
@@ -76,16 +76,19 @@ void RobotThread::run(){
     this->v = &videoReceiver;
     videoReceiver.startVideoStreamRecv();
 
+    connector.startUDPConnection();
     while(keepRunning){
         //connector._send();
-        //sleep(1000);
+        sleep(1);
         //connector._receive();
 
 
     }
 
-    joy.stopJoystickReading();
+    connector.stopUDPConnection();
     videoReceiver.stopVideoStreamRecv();
+    joy.stopJoystickReading();
+
     gui->closeWindow();
 
 
