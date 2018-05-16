@@ -33,8 +33,10 @@
 #include <QObject>
 #include <QQuickItem>
 
-//mavlink message header
+//mavlink message header and the mavlink message dealer
 #include "mavlink.h"
+//#include "src/MAVLinkDecoder/mavlinkmessagedealer.h"
+
 
 #define JS_EVENT_BUTTON 0x01 // button pressed/released
 #define JS_EVENT_AXIS   0x02 // joystick moved
@@ -218,6 +220,16 @@ public:
 };
 
 
+
+typedef struct joystickdata{
+    int16_t x_acc;
+    int16_t y_acc;
+    int16_t z_acc;
+    int16_t yaw_acc;
+    uint8_t brightness;
+} jsdata;
+
+void getJoyData(jsdata *data);
 
 
 

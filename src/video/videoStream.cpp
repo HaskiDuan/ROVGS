@@ -43,8 +43,12 @@ void VideoStream::run(){
     unsigned short servPort = atoi(defaultVideoStreamPort);
     //cv::namedWindow("recv",CV_WINDOW_AUTOSIZE);
     std::cout << "Starting videostream reading thread: videostream thread."<< std::endl;
+
+
     try{
         UDPSocket sock(servPort);
+        //sock.setUDPNonBlock(sock);     //set the socket to non block
+        sock.setUDPTimeout(sock,3,0);
 
         char buffer[bufLength];    // Buffer for echo string
         int recvMsgSize;           // Size of received message
@@ -53,13 +57,20 @@ void VideoStream::run(){
 
         clock_t last_cycle = clock();
         while(keepRunning){
+            //std::cout << "running the video stream thread!" <<std::endl;
             do{
+                //std::cout << "running in recv";
                 recvMsgSize = sock.recvFrom(buffer,bufLength,sourceAddress,sourcePort);
+
             }while(recvMsgSize > (int)sizeof(int) && keepRunning);
+            //std::cout << "running in recv over";
+
+            if(recvMsgSize < 0) continue;
 
             int totalPack = ((int*)buffer)[0];
-
+#ifdef QT_DEBUG
             std::cout << "expecting length of packs:" << totalPack << endl;
+#endif
             char* longBuf = new char[PACK_SIZE * totalPack];
             for(int i = 0;i < totalPack; i ++){
                 recvMsgSize = sock.recvFrom(buffer,bufLength,sourceAddress,sourcePort);
@@ -68,8 +79,9 @@ void VideoStream::run(){
                 }
                 memcpy( & longBuf[i*PACK_SIZE],buffer,PACK_SIZE);
             }
-
+#ifdef QT_DEBUG
             std::cout << "Received packet from " << sourceAddress << ":" << sourcePort << endl;
+#endif
 
             cv::Mat rawData = cv::Mat(1,PACK_SIZE * totalPack,CV_8UC1,longBuf);
             cv::Mat frame = cv::imdecode(rawData,CV_LOAD_IMAGE_COLOR);
@@ -85,7 +97,10 @@ void VideoStream::run(){
 
             clock_t next_cycle = clock();
             double duration = (next_cycle - last_cycle) / (double)CLOCKS_PER_SEC;
-            //std::cout << "\teffective FPS:" << ( 1 / duration) << "\tkbps:" << (PACK_SIZE * totalPack / duration / 1024 * 8) << std::endl;
+#ifdef QT_DEBUG
+            std::cout << "\teffective FPS:" << ( 1 / duration) << "\tkbps:" << (PACK_SIZE * totalPack / duration / 1024 * 8) << std::endl;
+#endif
+            r->gui->setVieoState(duration,totalPack);
 
             //std::cout << next_cycle - last_cycle;
 
@@ -94,6 +109,8 @@ void VideoStream::run(){
         std::cerr << e.what() << std::endl;
         exit(1);
     }
+
+    std::cout << "Exiting the videostream thread" << std::endl;
 
 }
 

@@ -35,6 +35,7 @@
 
 #include <errno.h>             // For errno
 #include <string.h>             // For memset
+#include <iostream>
 
 using namespace std;
 
@@ -279,7 +280,7 @@ void TCPServerSocket::setListen(int queueLen) throw(SocketException) {
 
 // UDPSocket Code
 
-UDPSocket::UDPSocket() throw(SocketException) : CommunicatingSocket(SOCK_DGRAM,
+UDPSocket::UDPSocket() throw(SocketException) : CommunicatingSocket(SOCK_DGRAM,   //int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
     IPPROTO_UDP) {
   setBroadcast();
 }
@@ -294,6 +295,36 @@ UDPSocket::UDPSocket(const string &localAddress, unsigned short localPort)
      throw(SocketException) : CommunicatingSocket(SOCK_DGRAM, IPPROTO_UDP) {
   setLocalAddressAndPort(localAddress, localPort);
   setBroadcast();
+}
+
+void UDPSocket::setUDPNonBlock(UDPSocket &sock){
+    std::cout << "set nonblock1" << std::endl;
+#if (defined __QNX__) | (defined __QNXNTO__)
+        if (fcntl(sock, F_SETFL, O_NONBLOCK | FASYNC) < 0)
+#else
+        if (fcntl(sock.sockDesc, F_SETFL, O_NONBLOCK | O_ASYNC) < 0)
+#endif
+
+    {
+            std::cout << "set nonblock2" << std::endl;
+                fprintf(stderr, "error setting nonblocking: %s\n", strerror(errno));
+                //sock.disconnect();
+                //close(sock);
+                exit(EXIT_FAILURE);
+    }
+        std::cout << "set nonblock2" << std::endl;
+
+
+}
+
+void UDPSocket::setUDPTimeout(UDPSocket &sock, int time_s, int time_us){
+    struct timeval timeOut;
+    timeOut.tv_sec = time_s;
+    timeOut.tv_usec = time_us;
+    if (setsockopt(sock.sockDesc, SOL_SOCKET, SO_RCVTIMEO, &timeOut, sizeof(timeOut)) < 0)
+    {
+        printf("time out setting failed\n");
+    }
 }
 
 void UDPSocket::setBroadcast() {
@@ -334,6 +365,7 @@ void UDPSocket::sendTo(const void *buffer, int bufferLen,
   }
 }
 
+
 int UDPSocket::recvFrom(void *buffer, int bufferLen, string &sourceAddress,
     unsigned short &sourcePort) throw(SocketException) {
   sockaddr_in clntAddr;
@@ -341,13 +373,18 @@ int UDPSocket::recvFrom(void *buffer, int bufferLen, string &sourceAddress,
   int rtn;
   if ((rtn = recvfrom(sockDesc, (raw_type *) buffer, bufferLen, 0, 
                       (sockaddr *) &clntAddr, (socklen_t *) &addrLen)) < 0) {
-    throw SocketException("Receive failed (recvfrom())", true);
-  }
+    //throw SocketException("Receive failed (recvfrom())", true);
+      return rtn;
+  }//else if((rtn = recvfrom(sockDesc, (raw_type *) buffer, bufferLen, 0,
+     //                 (sockaddr *) &clntAddr, (socklen_t *) &addrLen)) < 0 && !blockFlag) {
+    //return rtn;
+  //}
   sourceAddress = inet_ntoa(clntAddr.sin_addr);
   sourcePort = ntohs(clntAddr.sin_port);
 
   return rtn;
 }
+
 
 void UDPSocket::setMulticastTTL(unsigned char multicastTTL) throw(SocketException) {
   if (setsockopt(sockDesc, IPPROTO_IP, IP_MULTICAST_TTL, 

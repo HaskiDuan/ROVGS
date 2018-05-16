@@ -39,7 +39,8 @@ SOURCES += \
     src/MAVLinkDecoder/decoder.cpp \
     src/video/videoStream.cpp \
     src/video/PracticalSocket.cpp \
-    src/timer/GStimer.cpp
+    src/timer/GStimer.cpp \
+    src/MAVLinkDecoder/mavlinkmessagedealer.cpp
 
 
 RESOURCES += dialcontrol.qrc
@@ -57,7 +58,11 @@ HEADERS += \
     src/video/videoStream.h \
     src/video/config.h \
     src/video/PracticalSocket.h \
-    src/timer/GStimer.h
+    src/timer/GStimer.h \
+    src/MAVLinkDecoder/mavlinkmessagedealer.h \
+    src/MAVLinkDecoder/mavlinkmessagedealer.h \
+    src/debug/ROVGSdebug.h \
+    src/main.h
 
 
 FORMS += \

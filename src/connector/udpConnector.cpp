@@ -6,6 +6,10 @@ static timer_t sendButtonID;     //send button value
 static timer_t recvMessageID;    //receive message
 
 static UDPConnector* connector;
+static jsdata joyData;
+
+static void UDPtimerHandler(int sig, siginfo_t *si, void *uc, UDPConnector* connector);
+
 
 #if (defined __QNX__) | (defined __QNXNTO__)
 uint64_t microsSinceEpoch()
@@ -45,7 +49,7 @@ UDPConnector::UDPConnector()
 }
 
 UDPConnector::~UDPConnector(){
-    std::cout << "destructing the JoystickThread class object and free the memory" << std::endl;
+    std::cout << "destructing the udpconnector class object and free the memory" << std::endl;
     close(sock);
 }
 
@@ -90,7 +94,7 @@ int UDPConnector::networkInit(){
 #endif
 
         {
-            //fprintf(stderr, "error setting nonblocking: %s\n", strerror(errno));
+            //fprintf(stderr, "jsdata joyData;error setting nonblocking: %s\n", strerror(errno));
             throw "error setting nonblocking!";
         }
 
@@ -130,16 +134,33 @@ void UDPConnector::stopUDPConnection(){
 }
 
 int UDPConnector::_send(int mavlinkMessageID){
+    int bytesSent;
+    pthread_mutex_lock(&mavlinkMessageDealMutex);
+
     switch(mavlinkMessageID){
     case MAVLINK_MSG_ID_HEARTBEAT:
         mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_ACTIVE);
         len = mavlink_msg_to_send_buffer(buf, &msg);
-        int bytes_sent = sendto(sock, buf, len, 0, (struct sockaddr*)&gcAddr, sizeof(struct sockaddr_in));
+        bytesSent = sendto(sock, buf, len, 0, (struct sockaddr*)&gcAddr, sizeof(struct sockaddr_in));
 #ifdef QT_DEBUG
-        std::cout<<bytes_sent << " Bytes have been send to the repeator." << std::endl;
+        std::cout<<bytesSent << " Bytes have been send to the repeator." << std::endl;
 #endif
-    break;
+        break;
+
+    case MAVLINK_MSG_ID_JOYSTICK_CONTROL:
+        getJoyData(&joyData);
+        mavlink_msg_joystick_control_pack(1,200,&msg,joyData.x_acc,joyData.y_acc,joyData.z_acc,joyData.yaw_acc,0,0);
+        len = mavlink_msg_to_send_buffer(buf,&msg);
+        bytesSent = sendto(sock,buf,len,0,(struct sockaddr*)&gcAddr,sizeof(struct sockaddr_in));
+#ifdef QT_DEBUG
+        std::cout<<bytesSent << " Bytes have been send to the repeator." << std::endl;
+#endif
+        //std::cout<<bytesSent << " Bytes have been send to the repeator." << std::endl;
+        break;
+
     }
+
+    pthread_mutex_unlock(&mavlinkMessageDealMutex);
     /*Send Heartbeat */
 
 
@@ -150,26 +171,51 @@ void UDPConnector::_receive(){
 #ifdef QT_DEBUG
     std::cout<<"receive message from ROV mainboard."<<std::endl;
 #endif
-    recsize = recvfrom(sock,(void* )buf,bufferSize,0,(struct sockaddr*)&gcAddr,&fromlen); //this recvfrom function was set as non-block function, so the thread will not be blocked here
-    if(recsize == -1){
-        return;
+    //this recvfrom function was set as non-block function, so the thread will not be blocked here
+    if(recsize = recvfrom(sock,(void* )buf,bufferSize,0,(struct sockaddr*)&gcAddr,&fromlen) == -1){
+        if(errno == EINTR){
+            perror("eintr error");
+            return;
+        }
+        else{
+            //perror("receive error");
+            return ;
+        }
     }
-    std::cout<<"receive "<< recsize <<" bytes message success"<<std::endl;
+
     unsigned int temp = 0;
 
     if(recsize > 0){
-        mavlink_message_t msg;
-        mavlink_status_t status;
+        //mavlink_message_t msg;
+        //mavlink_status_t status;
+#ifdef QT_DEBUG
         std::cout << "Bytes Received: %d\nDatagram:" << recsize << std::endl;
+#endif
         for(int i = 0;i<recsize;i++){
             temp = buf[i];
+#ifdef QT_DEBUG
             printf("%02x ", (unsigned char)temp);
-            //std::cout << "temp:" << temp <<std::endl;
-            if(mavlink_parse_char(MAVLINK_COMM_0,buf[i],&msg,&status)){
-                //std::cout << "Received packet : SYS: " << msg.sysid <<", COMP: " << msg.compid << ", LEN: " << msg.len << ", MSG ID:" << msg.msgid << std::endl;
-                printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
+#endif
 
-            }
+            pthread_mutex_lock(&mavlinkMessageDealMutex);
+            if(mavlink_parse_char(MAVLINK_COMM_0,buf[i],&msg,&status)){
+                pthread_mutex_unlock(&mavlinkMessageDealMutex);
+#ifdef QT_DEBUG
+                printf("\nReceived packet: SYS: %d, COMP: %d, LEN: %d, MSG ID: %d\n", msg.sysid, msg.compid, msg.len, msg.msgid);
+#endif
+
+                //received mavlink message successfully, now decode the message and get information from it.
+                //send a signal to the mavlink message dealing thread
+                //MD.mavlinkMessageDecode(msg);
+                sem_post(&mavlinkMessageReceivedFlag);
+                sem_wait(&mavlinkMessageDealedFlag);
+
+
+
+
+
+            }else
+                pthread_mutex_unlock(&mavlinkMessageDealMutex);
         }
     }
     memset(buf,0,bufferSize);
@@ -182,12 +228,18 @@ void UDPConnector::run(){
     clock_t start,finish;
     double duration;
 #endif
-
+    //create a mavlinke message dealer object
+    MAVLinkMessageDealer mmd;
     std::cout << "Starting the mavlink message receiving and sending thread: UDPconnector thread."<<std::endl;
+
+    //start the mavlink message decode thread
+    mmd.startMessageDealer();
+
     connector = this;
     /*Send heart beat message every 1 second*/
-    UDPmakeTimer(&sendHeartbeatID,999,999);  //send the heart beat for every one second
-    UDPmakeTimer(&recvMessageID,25,25);  //receive message from ROV mainboard
+    UDPmakeTimer(&sendHeartbeatID,999,999);  //Send the heart beat for every one second
+    UDPmakeTimer(&recvMessageID,25,25);      //Receive message from ROV mainboard
+    UDPmakeTimer(&sendRudderID,20,20);       //Send joystick control message
 
     while(keepRunning){
 #ifdef QT_DEBUG
@@ -195,7 +247,7 @@ void UDPConnector::run(){
 
 #endif
         //_send();
-
+        sleep(1000);
 #ifdef QT_DEBUG
         finish = clock();
         duration = (double)(finish - start) / CLOCKS_PER_SEC;
@@ -203,6 +255,10 @@ void UDPConnector::run(){
 #endif
 
     }
+
+    std::cout << "Exiting the udp connector thread" <<std::endl;
+    mmd.stopMessageDealer();
+
 
 }
 
@@ -226,13 +282,19 @@ static void UDPtimerHandler(int sig, siginfo_t *si, void *uc){
     }else if(*tidp == recvMessageID){
         //std::cout << "recving message from the ROV" << std::endl;
         connector->_receive();
+    }else if(*tidp == sendRudderID){
+#ifdef QT_DEBUG
+        std::cout << "sending joystick control signal to ROV" << std::endl;
+#endif
+        connector->_send(MAVLINK_MSG_ID_JOYSTICK_CONTROL);
+
     }
 
 
 }
 
 int UDPConnector::UDPmakeTimer(timer_t *timerID, int expireMS, int intervalMS){
-    Sigevent te;
+
     Itimerspec its;
     Sigaction sa;
     int sigNo = SIGRTMIN;  //a minimal signal with no predefined meaning
@@ -245,6 +307,7 @@ int UDPConnector::UDPmakeTimer(timer_t *timerID, int expireMS, int intervalMS){
         perror("sigaction");
     }
 
+    Sigevent te;           //signal event
     /*set and enable the alarm*/
     te.sigev_notify = SIGEV_SIGNAL;
     te.sigev_signo = sigNo;
@@ -253,10 +316,10 @@ int UDPConnector::UDPmakeTimer(timer_t *timerID, int expireMS, int intervalMS){
     timer_create(CLOCK_REALTIME, &te, timerID);
 
     its.it_interval.tv_sec = 0;
-    its.it_interval.tv_nsec = intervalMS * 1000000;
+    its.it_interval.tv_nsec = intervalMS * 1000000;     //set interval of the timer, intervalMS can not larger than 999
     its.it_value.tv_sec = 0;
-    its.it_value.tv_nsec = expireMS * 1000000;
-    timer_settime(*timerID, 0, &its, NULL);
+    its.it_value.tv_nsec = expireMS * 1000000;          //set the repeat time for timer
+    timer_settime(*timerID, 0, &its, NULL);             //a replace for setitimer(), the setitimer has been obsolute
 
     return 1;
 

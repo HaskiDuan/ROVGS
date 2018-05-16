@@ -20,6 +20,7 @@
  **************************************************************************************/
 
 #include "rov_groundstation.h"
+#include "src/main.h"
 #include "gui.h"
 #include "src/robotthread.h"
 #include "src/pingthread.h"
@@ -32,7 +33,7 @@
 #include <QQmlEngine>
 #include <QQmlFileSelector>
 
-
+ROV_groundstation* gui_p;
 
 int main(int argc, char *argv[])
 {
@@ -77,24 +78,23 @@ int main(int argc, char *argv[])
     w.robotThread = &r;
     p.gui = &w;
     w.pingThread  = &p;
+    gui_p = &w;
 
 
 
     //view.robotThread = &r;
     //view.pingThread  = &p;
 
-    //start the thread
-    r.startSystem();
+    r.startSystem();           //start the thread
     p.startSystem();
 
     w.show();
 
-    //Wait until windows closed
-    int ec = a.exec();
+    int ec = a.exec();         //Wait until windows closed
+    std::cout << "windows is closed" << std::endl;
 
-    //Stop the system
-    r.stopSystem();
     p.stopSystem();
+    r.stopSystem();            //Stop the system
 
     return ec;
 }

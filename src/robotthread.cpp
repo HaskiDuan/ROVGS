@@ -19,6 +19,7 @@
 #include "cvd/thread.h"
 #include "rov_groundstation.h"
 #include "joystick/joystick.h"
+#include "connector/udpConnector.h"
 #include "video/videoStream.h"
 //Initialize the pthread mutex
 
@@ -50,7 +51,7 @@ void RobotThread::stopSystem(){
     keepRunning = false;
 
     //Stop the joystick reading thread
-    this->joy->stopJoystickReading();
+    //this->joy->stopJoystickReading();
     //Stop the thread
     join();
 }
@@ -61,8 +62,10 @@ void RobotThread::run(){
 
     //Let the joystick communicate with the robot thread
     Joystick joy("/dev/input/js2");
+    UDPConnector connector;
+
     joy.robotThread = this;
-    this->joy = &joy;
+    //this->joy = &joy;
 
     //Start the Joystick reading thread
     joy.startJoystickReading();
@@ -84,6 +87,8 @@ void RobotThread::run(){
 
 
     }
+
+    std::cout << "Exiting the robot thread"<<std::endl;
 
     connector.stopUDPConnection();
     videoReceiver.stopVideoStreamRecv();

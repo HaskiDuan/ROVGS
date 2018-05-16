@@ -1,5 +1,6 @@
 //fix invocation to atoi.
 #include <cstdlib>
+#include <fcntl.h>
 
 /*
  *   C++ sockets on Unix and Windows
@@ -282,6 +283,20 @@ public:
       throw(SocketException);
 
   /**
+   *   Set a UDP socket to NonBlock
+   *   @param sock UDP Socket object
+   */
+  void setUDPNonBlock(UDPSocket& sock);
+
+  /**
+   *   Set time out mechanism for a UDP socket
+   *   @param sock UDP Socket object
+   *   @param time_s timeout interval second
+   *   @param time_us timeout interval microsecond
+   */
+  void setUDPTimeout(UDPSocket& sock, int time_s, int time_us);
+
+  /**
    *   Unset foreign address and port
    *   @return true if disassociation is successful
    *   @exception SocketException thrown if unable to disconnect UDP socket
@@ -311,7 +326,7 @@ public:
    *   @return number of bytes received and -1 for error
    *   @exception SocketException thrown if unable to receive datagram
    */
-  int recvFrom(void *buffer, int bufferLen, string &sourceAddress, 
+  int recvFrom(void *buffer, int bufferLen, string &sourceAddress,
                unsigned short &sourcePort) throw(SocketException);
 
   /**

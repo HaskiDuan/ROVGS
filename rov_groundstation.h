@@ -10,10 +10,12 @@
 #include <QImage>
 
 #include "src/robotthread.h"
+#include "src/video/config.h"
 
 class RobotThread;
 class PingThread;
 struct ControlCommand;
+
 
 namespace Ui {
 class ROV_groundstation;
@@ -34,11 +36,16 @@ public:
     /*when joystick's Button states change, show them in GUI*/
     void changeButtonState(const short& eventNumber);
 
-    //emit function for emit signals
+    /*emit function for emit signals*/
     void setPings(int p500,int p20000);
     void setJoystickButtons(short eventNumber);
     void setJoystickAxis(short eventNumber, short eventValue);
     void setVideoStream(const QImage& img);
+    void setVieoState(double duration, int totalPack);
+
+    //sensor data update emit function
+    void setMS5837Data(float Depth);
+    void setJY901Data(int row,int pitch ,int yaw);
 
     void closeWindow();
 
@@ -55,6 +62,11 @@ private slots:
 
     // Slots to deal with video stream
     void setVideoStreamSlot(const QImage& img);
+    void setVideoStateSlot(double duration, int totalPack);
+
+    //Slots to deal with sensor data
+    void setMS5837DataSlot(float Depth);
+    void setJY901DataSlot(int row, int pitch, int yaw);
 
 signals:
     void setPingsSignal(int p500, int p20000);
@@ -63,7 +75,12 @@ signals:
     void setJoystickAxisSignal(short eventNumber,short eventValue);
 
     void setVideoStreamSignal(const QImage& img);
+    void setVideoStateSignal(double duration,int totalPack);
+
+    void setMS5837DataSignal(float Depth);
+    void setJY901DataSignal(int row, int pitch, int yaw);
 
 };
+
 
 #endif // ROV_GROUNDSTATION_H

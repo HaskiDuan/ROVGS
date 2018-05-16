@@ -14,6 +14,8 @@
                   <field type="int16_t" name="yaw_acc" units="scale">The yaw control signal from joystic.</field>
                   <field type="uint8_t" name="lights_up" units="scale">The light turn up signal from joystick>.</field>
                   <field type="uint8_t" name="lights_down" units="scale">The light turn down signal from joystick>.</field>
+		  <field type="uint8_t" name="brightness" units="scale">The light brightness>.</field>
+		
                 </message>
 
                 <message id="151" name="MS5837_DATA">
@@ -55,6 +57,11 @@
                   <description>Light status of the two light</description>
                   <field type="uint8_t" name="light_status" units="">light brightness</field>
                 </message>
+		
+		<message id="155" name="SYSTEM_LOCK">
+		  <description>System locks for rov </description>
+		  <field type="uint8_t" name="system_lock" units="">system lock for ROV</field>
+		</message>
         </messages>
 </mavlink>
 

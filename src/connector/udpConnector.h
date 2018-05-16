@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
+#include <semaphore.h>
 #if (defined __QNX__) | (defined __QNXNTO__)
 /* QNX specific headers */
 #include <unix.h>
@@ -34,11 +35,14 @@
 #include <QObject>
 
 #include "../timer/GStimer.h"
+#include "../MAVLinkDecoder/decoder.h"
+#include "../MAVLinkDecoder/mavlinkmessagedealer.h"
+#include "../joystick/joystick.h"
 
 const short bufferSize = 2041;
 const std::string defaultIp = "192.168.0.102";
-const int defaultTargetPort = 14550;
-const int defaultLocalPort = 14551;
+const int defaultTargetPort = 14551;
+const int defaultLocalPort = 14550;
 
 
 
@@ -122,13 +126,15 @@ private:
     ssize_t recsize;
     socklen_t fromlen;
     int bytesSent;
-    mavlink_message_t msg;
+    //mavlink_message_t msg;
     uint16_t len;
+
+
 
 
 };
 
-static void UDPtimerHandler(int sig, siginfo_t *si, void *uc, UDPConnector* connector);
+
 
 
 

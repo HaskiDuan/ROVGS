@@ -14,7 +14,7 @@ void PingThread::startSystem(){
 
 void PingThread::stopSystem(){
     keepRunning = false;
-    stop();
+    join();
 }
 
 double parsePingResults(std::string s){
@@ -45,8 +45,14 @@ void PingThread::run(){
     while(keepRunning){
         if(measure){
             p = popen(pingCommand500,"r");  //popen start a progress by creating a pipeline, and call the shell to excute ping command
-            fgets(line1,200,p);
-            fgets(line1,200,p);
+            char* temp;
+            temp = fgets(line1,200,p);
+            temp = fgets(line1,200,p);
+            if(temp == NULL){
+#ifdef QT_DEBUG
+                printf("set command error!\n");
+#endif
+            }
             pclose(p);
 
             //sleep 1s
@@ -56,8 +62,13 @@ void PingThread::run(){
             if(!keepRunning) break;
 
             p = popen(pingCommand500,"r");
-            fgets(line2,200,p);
-            fgets(line2,200,p);
+            temp = fgets(line2,200,p);
+            temp = fgets(line2,200,p);
+            if(temp == NULL){
+#ifdef QT_DEBUG
+                printf("set command error!\n");
+#endif
+            }
             pclose(p);
 
 
