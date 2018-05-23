@@ -59,7 +59,6 @@ public:
 
     RobotThread* r;
 
-
 };
 
 QImage cvMat2QImage(const cv::Mat& mat);

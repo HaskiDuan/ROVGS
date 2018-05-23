@@ -75,12 +75,14 @@ int UDPConnector::networkInit(){
     sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
     char cTargetIp[100] = {0};
     strncpy(cTargetIp,targetIp.c_str(),targetIp.size());
+    //strncpy(cTargetIp,defaultIp.c_str(),sizeof(cTargetIp));
+    std::cout << "target IP is" << cTargetIp << std::endl;
 
     memset(&locAddr, 0, sizeof(locAddr));
     locAddr.sin_family = AF_INET;
     locAddr.sin_addr.s_addr = INADDR_ANY;
     locAddr.sin_port = htons(defaultLocalPort);
-    /* Bind the socket to port 14551 - necessary to receive packets from qgroundcontrol */
+    /* Bind the socket to port 14550 - necessary to receive packets from qgroundcontrol */
     try{
         if (-1 == bind(sock,(struct sockaddr *)&locAddr, sizeof(struct sockaddr))){
             perror("error bind failed");
@@ -94,7 +96,7 @@ int UDPConnector::networkInit(){
 #endif
 
         {
-            //fprintf(stderr, "jsdata joyData;error setting nonblocking: %s\n", strerror(errno));
+            fprintf(stderr, "error setting nonblocking: %s\n", strerror(errno));
             throw "error setting nonblocking!";
         }
 
@@ -114,8 +116,6 @@ int UDPConnector::networkInit(){
     gcAddr.sin_port = htons(defaultTargetPort);
 
     std::cout << "init network success" << std::endl;
-
-
 
     return 0;
 
@@ -171,8 +171,10 @@ void UDPConnector::_receive(){
 #ifdef QT_DEBUG
     std::cout<<"receive message from ROV mainboard."<<std::endl;
 #endif
+    memset(buf,0,bufferSize);
     //this recvfrom function was set as non-block function, so the thread will not be blocked here
-    if(recsize = recvfrom(sock,(void* )buf,bufferSize,0,(struct sockaddr*)&gcAddr,&fromlen) == -1){
+    recsize = recvfrom(sock,(void* )buf,bufferSize,0,(struct sockaddr*)&gcAddr,&fromlen);
+    if(recsize == -1){
         if(errno == EINTR){
             perror("eintr error");
             return;
@@ -184,6 +186,7 @@ void UDPConnector::_receive(){
     }
 
     unsigned int temp = 0;
+    //std::cout << "recv size is " << recsize << std::endl;
 
     if(recsize > 0){
         //mavlink_message_t msg;
@@ -248,6 +251,7 @@ void UDPConnector::run(){
 #endif
         //_send();
         sleep(1000);
+        //_receive();
 #ifdef QT_DEBUG
         finish = clock();
         duration = (double)(finish - start) / CLOCKS_PER_SEC;

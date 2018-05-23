@@ -18,6 +18,9 @@ ROV_groundstation::ROV_groundstation(QWidget *parent) :
     QObject::connect( this,SIGNAL( setJoystickAxisSignal(short,short)),
                       this,SLOT( setJoystickAxisSlot(short,short)));
 
+    QObject::connect( this,SIGNAL( setJoystickStateSignal(bool)),
+                      this,SLOT( setJoystickStateSlot(bool)));
+
     QObject::connect( this,SIGNAL( setVideoStreamSignal(QImage)),
                       this,SLOT( setVideoStreamSlot(QImage)));
 
@@ -29,6 +32,7 @@ ROV_groundstation::ROV_groundstation(QWidget *parent) :
 
     QObject::connect( this,SIGNAL( setJY901DataSignal(int,int,int)),
                       this,SLOT( setJY901DataSlot(int,int,int)));
+
 }
 
 ROV_groundstation::~ROV_groundstation()
@@ -102,6 +106,10 @@ void ROV_groundstation::setJoystickAxis(short eventNumber, short eventValue){
     emit setJoystickAxisSignal(eventNumber,eventValue);
 }
 
+void ROV_groundstation::setJoystickState(bool isAlive){
+    emit setJoystickStateSignal(isAlive);
+}
+
 void ROV_groundstation::setVideoStream(const QImage &img){
     emit setVideoStreamSignal(img);
 }
@@ -147,6 +155,15 @@ void ROV_groundstation::setJoystickAxisSlot(short eventNumber, short eventValue)
     std::cout <<"Axis " << int(eventNumber) << " is at position " << eventValue << std::endl;
 #endif
     setAccValue(eventNumber,eventValue);
+}
+
+void ROV_groundstation::setJoystickStateSlot(bool isAlive){
+    if(isAlive){
+        ui->jsStateCheckBox->setCheckState(Qt::Checked);
+    }
+    else{
+        ui->jsStateCheckBox->setCheckState(Qt::Unchecked);
+    }
 }
 
 void ROV_groundstation::setVideoStreamSlot(const QImage &img){

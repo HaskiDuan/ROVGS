@@ -15,6 +15,7 @@
 #ifndef __JOYSTICK_H__
 #define __JOYSTICK_H__
 
+#include <QObject>
 
 #include <string>
 #include <iostream>
@@ -30,7 +31,6 @@
 #include "joystickdata.h"
 
 #include <QQmlContext>
-#include <QObject>
 #include <QQuickItem>
 
 //mavlink message header and the mavlink message dealer
@@ -49,6 +49,7 @@ class ROV_groundstation;
  */
 class JoystickEvent
 {
+
 public:
   /** Minimum value of axes range */
   static const short MIN_AXES_VALUE = -32768;
@@ -129,7 +130,10 @@ std::ostream& operator<<(std::ostream& os, const JoystickEvent& e);
 /**
  * Represents a joystick device. Allows data to be sampled from it.
  */
-class Joystick :private CVD::Thread{
+class Joystick :private CVD::Thread {     //set joystick as QObject to communicate with qml
+
+    //Q_PROPERTY(jsdata joyData READ joyData WRITE setJoyData NOTIFY joyDataChanged)
+
 private:
 
   void run();
@@ -145,6 +149,8 @@ private:
   
 public:
   ~Joystick();
+
+  //explicit Joystick(QObject *parent = nullptr);
 
   /**
    * Initialises an instance for the first joystick: /dev/input/js0
@@ -230,6 +236,8 @@ typedef struct joystickdata{
 } jsdata;
 
 void getJoyData(jsdata *data);
+
+extern bool isJoystickAlive;
 
 
 

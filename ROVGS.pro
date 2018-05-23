@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
-QT       += quick qml
+QT       += quick qml multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +25,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Add OpenCV lib
 INCLUDEPATH += /usr/local/include/opencv
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lrt
+LIBS += -L/usr/local/lib \
+        -lopencv_core -lopencv_imgcodecs -lopencv_highgui \    #openCV lib
+        -lrt \                                                 #Timer lib
+        -lusb-1.0 \                                            #USB control lib
 
 SOURCES += \
         main.cpp \
@@ -40,7 +43,11 @@ SOURCES += \
     src/video/videoStream.cpp \
     src/video/PracticalSocket.cpp \
     src/timer/GStimer.cpp \
-    src/MAVLinkDecoder/mavlinkmessagedealer.cpp
+    src/MAVLinkDecoder/mavlinkmessagedealer.cpp \
+    src/ROVsystem/systemMonitor.cpp \
+    gsapplication.cpp \
+    src/video/presenters_factory.cpp \
+    src/video/videopresenter.cpp
 
 
 RESOURCES += dialcontrol.qrc
@@ -62,7 +69,11 @@ HEADERS += \
     src/MAVLinkDecoder/mavlinkmessagedealer.h \
     src/MAVLinkDecoder/mavlinkmessagedealer.h \
     src/debug/ROVGSdebug.h \
-    src/main.h
+    src/main.h \
+    src/ROVsystem/systemMonitor.h \
+    gsapplication.h \
+    src/video/presenters_factory.h \
+    src/video/videopresenter.h
 
 
 FORMS += \

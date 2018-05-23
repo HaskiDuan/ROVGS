@@ -26,6 +26,8 @@ pthread_mutex_t joystickOperateLock;
 
 static jsdata joyData = {0,0,0,0,0};
 
+bool isJoystickAlive = false;
+
 Joystick::Joystick()
 {
   //keepRunning = true;
@@ -130,76 +132,70 @@ void Joystick::run(){
          * TODO: detect whether the joystick is still alive or not, but fcntl()doesn't have such function, it can only
          * detect whether the fd is bad or not
         */
+        if(isJoystickAlive){
 
-        if(fcntl(_fd,F_GETFL) == -1){
-            std::cout << "lost the joystick" << std::endl;
-            close(_fd);
-            openPath("/dev/input/js1");
-            continue;
-        }
+            JoystickEvent event;         //Attempt to sample an event from the joystick
+            //this->robotThread->view->rootContext()->setContextProperty("joystickData",QVariant::fromValue(controlData));
 
-        //Attempt to sample an event from the joystick
-        JoystickEvent event;
-        //this->robotThread->view->rootContext()->setContextProperty("joystickData",QVariant::fromValue(controlData));
+            if(this->sample(&event)){
+                if(event.isButton()){
+    #ifdef  QT_DEBUG
+                    std::cout << "Button " << int(event.number) << " is " << (event.value == 0 ? "up" : "down" ) <<std::endl;
+    #endif
 
-        if(this->sample(&event)){
-            if(event.isButton()){
-#ifdef  QT_DEBUG
-                std::cout << "Button " << int(event.number) << " is " << (event.value == 0 ? "up" : "down" ) <<std::endl;
-#endif
+                    if(event.value == 0){
+                        gui->setJoystickButtons(event.number);
 
-                if(event.value == 0){
-                    gui->setJoystickButtons(event.number);
-
+                    }
                 }
-            }
-            /*deal with the */
-            else if (event.isAxis()){
-                //mavlink_msg_heartbeat_pack();
-                //mavlink_msg_joystick_pack();                int16_t x_acc = 0;
-                pthread_mutex_lock(&joystickOperateLock);
+                /*deal with the rocking bar*/
+                else if (event.isAxis()){
+                    //mavlink_msg_heartbeat_pack();
+                    //mavlink_msg_joystick_pack();                int16_t x_acc = 0;
+                    pthread_mutex_lock(&joystickOperateLock);
 
 
-                switch(event.number){
-                case xAxisValue:
-#ifdef QT_DEBUG
-    std::cout << "X axis is envoked" << std::endl;
-#endif
-                    joyData.x_acc = event.value;
-                    break;
+                    switch(event.number){
+                    case xAxisValue:
+    #ifdef QT_DEBUG
+        std::cout << "X axis is envoked" << std::endl;
+    #endif
+                        joyData.x_acc = event.value;
+                        break;
 
-                case yAxisValue:
-#ifdef QT_DEBUG
-    std::cout << "Y axis is envoked" << std::endl;
-#endif
-                    joyData.y_acc = event.value;
-                    break;
+                    case yAxisValue:
+    #ifdef QT_DEBUG
+        std::cout << "Y axis is envoked" << std::endl;
+    #endif
+                        joyData.y_acc = event.value;
+                        break;
 
-                case zAxisValue:
-#ifdef QT_DEBUG
-    std::cout << "Z axis is envoked" << std::endl;
-#endif
-                    joyData.z_acc = event.value;
-                    break;
+                    case zAxisValue:
+    #ifdef QT_DEBUG
+        std::cout << "Z axis is envoked" << std::endl;
+    #endif
+                        joyData.z_acc = event.value;
+                        break;
 
-                case yawAxisValue:
-#ifdef QT_DEBUG
-    std::cout << "Yaw axis is envoked" << std::endl;
-#endif
-                    joyData.yaw_acc = event.value;
-                    break;
+                    case yawAxisValue:
+    #ifdef QT_DEBUG
+        std::cout << "Yaw axis is envoked" << std::endl;
+    #endif
+                        joyData.yaw_acc = event.value;
+                        break;
+                    }
+
+
+                    pthread_mutex_unlock(&joystickOperateLock);
+
+                    gui->setJoystickAxis(event.number,event.value);
+    #ifdef QT_DEBUG
+        std::cout <<"Axis " << int(event.number) << " is at position " << event.value << std::endl;
+    #endif
                 }
 
-
-                pthread_mutex_unlock(&joystickOperateLock);
-
-                gui->setJoystickAxis(event.number,event.value);
-#ifdef QT_DEBUG
-    std::cout <<"Axis " << int(event.number) << " is at position " << event.value << std::endl;
-#endif
             }
-
-        }
+        }//isJoystickAlive
     }//while(keepRunning)
 
     std::cout << "Exiting the joystick thread" << std::endl;

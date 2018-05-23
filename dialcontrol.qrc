@@ -8,5 +8,10 @@
         <file>content/overlay.png</file>
         <file>content/quit.png</file>
         <file>content/QuitButton.qml</file>
+        <file>Groundstation.qml</file>
+        <file>GroundstationForm.ui.qml</file>
+        <file>content/StatusView.qml</file>
+        <file>content/MapView.qml</file>
+        <file>content/VideoView.qml</file>
     </qresource>
 </RCC>

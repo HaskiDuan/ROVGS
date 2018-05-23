@@ -38,8 +38,11 @@ public:
 
     /*emit function for emit signals*/
     void setPings(int p500,int p20000);
+
     void setJoystickButtons(short eventNumber);
     void setJoystickAxis(short eventNumber, short eventValue);
+    void setJoystickState(bool isAlive);
+
     void setVideoStream(const QImage& img);
     void setVieoState(double duration, int totalPack);
 
@@ -59,6 +62,7 @@ private slots:
     // Slots to deal with joystick inputs
     void setJoystickButtonsSlot(short eventNumber);
     void setJoystickAxisSlot(short eventNumber,short eventValue);
+    void setJoystickStateSlot(bool isAlive);
 
     // Slots to deal with video stream
     void setVideoStreamSlot(const QImage& img);
@@ -73,6 +77,7 @@ signals:
 
     void setJoystickButtonsSignal(short eventNumber);
     void setJoystickAxisSignal(short eventNumber,short eventValue);
+    void setJoystickStateSignal(bool isAlive);
 
     void setVideoStreamSignal(const QImage& img);
     void setVideoStateSignal(double duration,int totalPack);

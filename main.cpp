@@ -24,7 +24,9 @@
 #include "gui.h"
 #include "src/robotthread.h"
 #include "src/pingthread.h"
+#include "src/ROVsystem/systemMonitor.h"
 #include "src/joystick/joystick.h"
+#include "src/video/presenters_factory.h"
 #include <iostream>
 
 #include <QtGui>
@@ -44,10 +46,21 @@ int main(int argc, char *argv[])
     //Create a RobotThread object for running the robot control and status monitor thread
     RobotThread r;
     PingThread  p;
+    SystemMonitor s;
+
 
     //Set up the UI
     QApplication a(argc, argv);
-    //a.setQuitOnLastWindowClosed(true);
+#ifdef Q_OS_LINUX
+    QApplication::setWindowIcon(QIcon("./res/resources/icons/qgroundcontrol.ico"));
+#endif /* Q_OS_LINUX */
+
+
+    //qml Window
+    QQuickView view;
+
+    presentation::PresentersFactory factory;
+    view.rootContext()->setContextProperty("factory", &factory);
 
     //GUIView view;
 
@@ -57,18 +70,14 @@ int main(int argc, char *argv[])
     qmlRegisterType<JoystickData>("Joystick.Control.Data",1,0,"ControlData");
 
     ///Because I haven't understand the qml,so this groundstation will use default qt ui instead of qml
-    /*
-    view.setUpView(&w);
-    view.connect(view.engine(), &QQmlEngine::quit, &w, &QCoreApplication::quit);
-    new QQmlFileSelector(view.engine(), &view);
-
-    view.setSource(QUrl("qrc:///dialcontrol.qml"));
+    view.connect(view.engine(),&QQmlEngine::quit,&a,&QCoreApplication::quit);
+    new QQmlFileSelector(view.engine(),&view);
+    view.setSource(QUrl("qrc:///GroundstationForm.ui.qml"));
     if (view.status() == QQuickView::Error)
         return -1;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.rootContext()->setContextProperty("cd",&d);
     view.show();
-    */
+    view.showMaximized();
 
     w.setWindowTitle("ROV Ground Station");
     //QObject::connect((QObject* )&w,SIGNAL(destroyed(QWidget*)),&a,&QApplication::quit);
@@ -78,7 +87,7 @@ int main(int argc, char *argv[])
     w.robotThread = &r;
     p.gui = &w;
     w.pingThread  = &p;
-    gui_p = &w;
+    gui_p = &w;                //A global point to connect child thread to GUI
 
 
 
@@ -87,12 +96,14 @@ int main(int argc, char *argv[])
 
     r.startSystem();           //start the thread
     p.startSystem();
+    s.startSystemMonitor();
 
     w.show();
 
     int ec = a.exec();         //Wait until windows closed
     std::cout << "windows is closed" << std::endl;
 
+    s.stopSystemMonitor();
     p.stopSystem();
     r.stopSystem();            //Stop the system
 
