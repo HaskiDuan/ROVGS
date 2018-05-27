@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1415</width>
-    <height>800</height>
+    <height>1020</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -319,7 +319,7 @@
      <x>800</x>
      <y>580</y>
      <width>561</width>
-     <height>151</height>
+     <height>371</height>
     </rect>
    </property>
    <property name="title">
@@ -436,6 +436,16 @@
     </property>
     <property name="text">
      <string>Z Acc</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>160</y>
+      <width>521</width>
+      <height>191</height>
+     </rect>
     </property>
    </widget>
   </widget>

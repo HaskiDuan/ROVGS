@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += quick qml multimedia
+QT       += printsupport widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -92,6 +93,12 @@ INCLUDEPATH += $$MAVLINKPATH/ROV
 
 LIBS += /usr/local/lib/libcvd.so\
         /usr/local/lib/libcvd.so.0
+
+CONFIG += qwt
+
+QWT_ROOT = /usr/local/qwt-6.1.4-svn #qwt控件安装位置，注意与qwtconfig.pri配置文件配合修改
+include ( $${QWT_ROOT}/features/qwt.prf )
+
 
 
 
